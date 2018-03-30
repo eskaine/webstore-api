@@ -1,0 +1,24 @@
+{
+  "name": "webstore-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eskaine/webstore-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eskaine/webstore-api/issues"
+  },
+  "homepage": "https://github.com/eskaine/webstore-api#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
