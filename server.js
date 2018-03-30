@@ -2,7 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const app = express();
 
-const routes = require('./routes/routes');
+const routes = require('./routes/index');
 
 app.use(helmet());
 
