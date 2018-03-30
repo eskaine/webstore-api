@@ -1,7 +1,7 @@
 module.exports = (app) => {
-  app.route('/').get((req, res) => {
-    res.status(200).json({
-      message: 'request received!'
-    });
-  });
-}
+	app.route('/').get((req, res) => {
+		res.status(200).json({
+			message: 'request received!'
+		});
+	});
+};
