@@ -1,7 +1,10 @@
 const express = require('express');
+const helmet = require('helmet');
 const app = express();
 
 const routes = require('./routes/routes');
+
+app.use(helmet());
 
 routes(app);
 
