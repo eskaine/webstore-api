@@ -1,11 +1,16 @@
+require('dotenv').load();
+
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const app = express();
 
 const routes = require('./routes/index');
+
+mongoose.connect(process.env.MONGO_URI);
 
 app.use(helmet());
 app.use(morgan('dev'));
