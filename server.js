@@ -1,4 +1,4 @@
-require('dotenv').load();
+//require('dotenv').load();
 
 const express = require('express');
 const helmet = require('helmet');
@@ -11,6 +11,7 @@ const app = express();
 const routes = require('./routes/index');
 
 mongoose.connect(process.env.MONGO_URI);
+mongoose.Promise = global.Promise;
 
 app.use(helmet());
 app.use(morgan('dev'));

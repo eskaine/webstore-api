@@ -1,5 +1,5 @@
 {
   "env": {
-    "MONGO_URI": "mongodb://shopAdmin:Yf;ES:X\"]38d!QcM@ds121889.mlab.com:21889/mywebshop-db"
+    "MONGO_URI": "mongodb://shopAdmin:YfESX38dQcM@ds121889.mlab.com:21889/mywebshop-db"
   }
 }
