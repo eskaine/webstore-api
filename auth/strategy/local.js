@@ -5,25 +5,6 @@ const bcrypt = require('bcryptjs');
 const User = require('../../models/users');
 const saltRounds = 12;
 
-function localStrategy(callback) {
-	return new LocalStrategy({
-		usernameField: 'email',
-		passwordField: 'password',
-		session: false,
-		passReqToCallback: true
-	}, (req, email, password, done) => {
-		process.nextTick(() => {
-			User.findOne({ 'local.email': req.body.email })
-				.exec((err, user) => {
-					if(err)
-						return done(err);
-
-					return callback(req, user, password, done);
-				});
-		});
-	});
-}
-
 //User Signup
 exports.signup = localStrategy((req, user, password, done) => {
 	if(user)
@@ -58,3 +39,22 @@ exports.login = localStrategy((req, user, password, done) => {
 		return done(null, user);
 	});
 });
+
+function localStrategy(callback) {
+	return new LocalStrategy({
+		usernameField: 'email',
+		passwordField: 'password',
+		session: false,
+		passReqToCallback: true
+	}, (req, email, password, done) => {
+		process.nextTick(() => {
+			User.findOne({ 'local.email': req.body.email })
+				.exec((err, user) => {
+					if(err)
+						return done(err);
+
+					return callback(req, user, password, done);
+				});
+		});
+	});
+}

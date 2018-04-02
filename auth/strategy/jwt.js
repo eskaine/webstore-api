@@ -1,9 +1,9 @@
 const passportJWT = require('passport-jwt');
-const { Strategy: JWTStrategy, ExtractJWT} = passportJWT;
+const { Strategy: JWTStrategy, ExtractJwt} = passportJWT;
 const User = require('../../models/users');
 
 exports.authenticate = new JWTStrategy({
-	jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 	secretOrKey: process.env.JWT_KEY
 }, (jwtPayload, done) => {
 	process.nextTick(() => {
