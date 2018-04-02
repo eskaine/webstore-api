@@ -18,6 +18,6 @@ module.exports = (passport) => {
 	passport.use('signup', localStrategy.signup);
 	passport.use('login', localStrategy.login);
 
-	//passport.use('jwt', jwtStrategy.authenticate);
+	passport.use('jwt', jwtStrategy.authenticate);
 
 };
