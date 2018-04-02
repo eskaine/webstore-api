@@ -15,11 +15,12 @@ router.post('/signup', (req, res, next) => {
 			});
 		}
 
+		console.log('user', user);
 		req.login(user, { session: false }, (err) => {
 			if(err)
 				res.send(err);
 
-			const token = jwt.sign(user, process.env.JWT_KEY, { expiresIn: '1h' });
+			const token = jwt.sign({}, process.env.JWT_KEY, { expiresIn: '1h' });
 			return res.status(200).json({
 				message: 'Authentication successful',
 				token: token
@@ -44,10 +45,12 @@ router.post('/login', (req, res, next) => {
 			if(err)
 				res.send(err);
 
-			const token = jwt.sign(user, process.env.JWT_KEY, { expiresIn: '1h' });
+
+
+			//const token = jwt.sign({}, process.env.JWT_KEY, { expiresIn: '1h' });
 			return res.status(200).json({
-				message: 'Authentication successful',
-				token: token
+				message: 'Authentication successful'
+				//token: token
 			});
 		});
 
