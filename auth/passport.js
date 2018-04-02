@@ -1,11 +1,13 @@
-const passport = require('passport');
+'use strict';
+
 const LocalStrategy = require('passport-local').Strategy;
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const User = require('../models/users');
 const saltRounds = 12;
 
-module.exports = () => {
+module.exports = (passport) => {
 	passport.serializeUser(function(user, done) {
 		done(null, user.id);
 	});
@@ -22,26 +24,30 @@ module.exports = () => {
 		session: false,
 		passReqToCallback: true
 	}, (req, email, password, done) => {
+
 		process.nextTick(() => {
-			User.find({ email: req.body.email })
+			User.findOne({ email: req.body.email })
 				.exec((err, user) => {
 					if(err)
 						return done(err);
 
-					if(!user) {
-						let newUser = new User();
-						newUser.local.email = req.body.email;
-						bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
-							newUser.local.password = hash;
-							newUser.save(err => {
-								if(err)
-									return done(err);
+					if(user)
+						return done(null, false);
 
-								return done(null, newUser);
-							});
+					console.log(process.env.MONGO_URI);
+
+					let newUser = new User();
+					newUser._id = new mongoose.Types.ObjectId();
+					newUser.local.email = req.body.email;
+					bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
+						newUser.local.password = hash;
+						newUser.save(err => {
+							if(err)
+								return done(err);
+
+							return done(null, newUser);
 						});
-					}
-
+					});
 				});
 		});
 	}));

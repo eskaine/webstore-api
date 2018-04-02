@@ -3,18 +3,22 @@
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const passport = require('passport');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const app = express();
 
 const routes = require('./routes/index');
+require('./auth/passport')(passport);
 
 mongoose.connect(process.env.MONGO_URI);
 mongoose.Promise = global.Promise;
 
 app.use(helmet());
 app.use(morgan('dev'));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
