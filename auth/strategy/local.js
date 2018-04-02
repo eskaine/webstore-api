@@ -13,7 +13,7 @@ function localStrategy(callback) {
 		passReqToCallback: true
 	}, (req, email, password, done) => {
 		process.nextTick(() => {
-			User.find({ 'local.email': req.body.email })
+			User.findOne({ 'local.email': req.body.email })
 				.exec((err, user) => {
 					if(err)
 						return done(err);
