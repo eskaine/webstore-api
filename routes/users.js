@@ -2,9 +2,23 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+const { check, validationResult } = require('express-validator/check');
 
-const passportCallback = (req, res, next) => {
-	const path = req.route.path.match(/[a-zA-Z]+/g)[0];
+//Body validation
+const bodyValidation = [
+	check('email').isEmail().withMessage('Invalid email').trim().normalizeEmail()
+];
+
+const passwordValidation = check('password').isLength({ min: 8 }).withMessage('Invalid password');
+
+const callback = (req, res, next) => {
+	//Validation errors
+	const validationErrors = validationResult(req);
+	if (!validationErrors.isEmpty()) {
+		return res.status(422).json({ errors: validationErrors.mapped() });
+	}
+
+	const path = req.path.match(/[a-zA-Z]+/g)[0];
 	passport.authenticate(path, { session: false }, (err, user) => {
 		if(err)
 			return next(err);
@@ -36,7 +50,13 @@ const passportCallback = (req, res, next) => {
 	})(req, res);
 };
 
-router.post('/signup', passportCallback);
-router.post('/login', passportCallback);
+router.post('/login', [...bodyValidation, passwordValidation], callback);
+router.post('/signup', [...bodyValidation, passwordValidation.custom((value, {req}) => {
+	if(value !== req.body.passwordCheck)
+		throw new Error('Passwords don\'t match');
+
+	return value;
+})], callback);
+
 
 module.exports = router;
