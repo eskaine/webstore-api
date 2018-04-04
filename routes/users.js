@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const querystring = require('querystring');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { check, validationResult } = require('express-validator/check');
@@ -42,10 +43,12 @@ const callback = (req, res, next) => {
 				{ expiresIn: '1h' }
 			);
 
-			return res.status(200).json({
-				message: 'Authentication successful',
+			const query = querystring.stringify({
+				message: path + ' successful',
 				token: token
 			});
+
+			return res.redirect(200, '/?' + query);
 		});
 	})(req, res);
 };
