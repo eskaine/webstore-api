@@ -1,8 +1,8 @@
 'use strict';
 
 const User = require('../models/users');
-const localStrategy = require('./strategy/local');
-const jwtStrategy = require('./strategy/jwt');
+const signin = require('./signin');
+const authenticate = require('./auth');
 
 module.exports = (passport) => {
 	passport.serializeUser(function(user, done) {
@@ -15,9 +15,9 @@ module.exports = (passport) => {
 		});
 	});
 
-	passport.use('signup', localStrategy.signup);
-	passport.use('login', localStrategy.login);
+	passport.use('signup', signin.signup);
+	passport.use('login', signin.login);
 
-	passport.use('jwt', jwtStrategy.authenticate);
+	passport.use('jwt', authenticate);
 
 };
