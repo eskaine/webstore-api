@@ -9,5 +9,6 @@ module.exports = (req, res, next) => {
 			return res.redirect(401, '/login');
 		}
 
+		next();
 	})(req, res);
 };
