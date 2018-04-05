@@ -2,7 +2,7 @@
 
 const User = require('../models/users');
 const signin = require('./signin');
-const authenticate = require('./auth');
+const token = require('./token');
 
 module.exports = (passport) => {
 	passport.serializeUser(function(user, done) {
@@ -18,6 +18,6 @@ module.exports = (passport) => {
 	passport.use('signup', signin.signup);
 	passport.use('login', signin.login);
 
-	passport.use('jwt', authenticate);
+	passport.use('jwt', token.authenticate);
 
 };
