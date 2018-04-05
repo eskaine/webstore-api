@@ -1,8 +1,7 @@
-//require('dotenv').load();
-
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const sanitize = require('sanitize');
 const RateLimit = require('express-rate-limit');
 const passport = require('passport');
 const bodyParser = require('body-parser');
@@ -24,6 +23,7 @@ mongoose.Promise = global.Promise;
 
 app.use(helmet());
 app.use(limiter);
+app.use(sanitize.middleware);
 app.use(morgan('dev'));
 app.use(passport.initialize());
 app.use(passport.session());

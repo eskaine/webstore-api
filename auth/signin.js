@@ -6,14 +6,14 @@ const User = require('../models/users');
 const saltRounds = 12;
 
 //User Signup
-exports.signup = localStrategy((req, user, password, done) => {
+exports.signup = localStrategy((user, email, password, done) => {
 	if(user)
 		return done(null, false);
 
 	let newUser = new User();
 	newUser._id = new mongoose.Types.ObjectId();
-	newUser.local.email = req.body.email;
-	return bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
+	newUser.local.email = email;
+	return bcrypt.hash(password, saltRounds, (err, hash) => {
 		newUser.local.password = hash;
 		newUser.save(err => {
 			if(err)
@@ -25,7 +25,7 @@ exports.signup = localStrategy((req, user, password, done) => {
 });
 
 //User Login
-exports.login = localStrategy((req, user, password, done) => {
+exports.login = localStrategy((user, email, password, done) => {
 	if(!user)
 		return done(null, false);
 
@@ -48,12 +48,16 @@ function localStrategy(callback) {
 		passReqToCallback: true
 	}, (req, email, password, done) => {
 		process.nextTick(() => {
-			User.findOne({ 'local.email': req.body.email })
+			//Sanitize user inputs
+			let email = req.bodyEmail('email');
+			let pass = req.bodyString('password');
+
+			User.findOne({ 'local.email': email })
 				.exec((err, user) => {
 					if(err)
 						return done(err);
 
-					return callback(req, user, password, done);
+					return callback(user, email, pass, done);
 				});
 		});
 	});
