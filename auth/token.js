@@ -6,19 +6,13 @@ const User = require('../models/users');
 exports.authenticate = new JWTStrategy({
 	jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('JWT'),
 	secretOrKey: process.env.JWT_KEY
-}, (jwtPayload, done) => {
-	process.nextTick(() => {
-		User.findOne({ 'local.email': jwtPayload.email })
-			.exec((err, user) => {
-				if(err)
-					return done(err);
+}, async (jwtPayload, done) => {
+	const user = await User.findOne({ 'local.email': jwtPayload.email }).catch(err => done(err));
 
-				if(!user)
-					return done(null, false);
+	if(!user)
+		return done(null, false);
 
-				return done(null, user);
-			});
-	});
+	return done(null, user);
 });
 
 exports.generate = (email) => {

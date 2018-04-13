@@ -6,38 +6,33 @@ const User = require('../models/users');
 const saltRounds = 12;
 
 //User Signup
-exports.signup = localStrategy((user, email, password, done) => {
+exports.signup = localStrategy(async (user, email, password, done) => {
 	if(user)
 		return done(null, false);
 
-	let newUser = new User();
+	const newUser = new User();
 	newUser._id = new mongoose.Types.ObjectId();
 	newUser.local.email = email;
-	return bcrypt.hash(password, saltRounds, (err, hash) => {
-		newUser.local.password = hash;
-		newUser.save(err => {
-			if(err)
-				return done(err);
+	newUser.local.password = await bcrypt.hash(password, saltRounds).catch(err => done(err));
+	newUser.save(err => {
+		if(err)
+			return done(err);
 
-			return done(null, newUser);
-		});
+		return done(null, newUser);
 	});
 });
 
 //User Login
-exports.login = localStrategy((user, email, password, done) => {
+exports.login = localStrategy(async (user, email, password, done) => {
 	if(!user)
 		return done(null, false);
 
-	return bcrypt.compare(password, user.local.password, (err, result) => {
-		if(err)
-			return done(err);
+	const result = await bcrypt.compare(password, user.local.password).catch(err => done(err));
 
-		if(!result)
-			return done(null, false);
+	if(!result)
+		return done(null, false);
 
-		return done(null, user);
-	});
+	return done(null, user);
 });
 
 function localStrategy(callback) {
@@ -46,19 +41,9 @@ function localStrategy(callback) {
 		passwordField: 'password',
 		session: false,
 		passReqToCallback: true
-	}, (req, email, password, done) => {
-		process.nextTick(() => {
-			//Sanitize user inputs
-			let email = req.bodyEmail('email');
-			let pass = req.bodyString('password');
-
-			User.findOne({ 'local.email': email })
-				.exec((err, user) => {
-					if(err)
-						return done(err);
-
-					return callback(user, email, pass, done);
-				});
-		});
+	}, async (req, email, password, done) => {
+		const user = await User.findOne({ 'local.email': email }).catch(err => done(err));
+		
+		return callback(user, email, password, done);
 	});
 }
